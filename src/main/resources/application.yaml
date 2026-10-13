@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: linko
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/linko_ms}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  flyway:
+    enabled: true
+    locations:
+    - classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
