@@ -2,7 +2,7 @@ spring:
   application:
     name: linko
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE}
+    active: ${SPRING_PROFILES_ACTIVE:local}
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/linko_ms}
     username: ${POSTGRES_USERNAME:postgres}
