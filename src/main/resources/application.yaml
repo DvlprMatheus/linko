@@ -12,6 +12,7 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: false
+    open-in-view: false
   flyway:
     enabled: true
     locations:
@@ -23,3 +24,6 @@ spring:
 short:
   application-url: ${SHORT_APPLICATION_URL:http://localhost:8080}
   expiration: ${SHORT_EXPIRATION:P3M}
+cache:
+  redis:
+    time-to-live: ${CACHE_REDIS_TTL:PT10M}

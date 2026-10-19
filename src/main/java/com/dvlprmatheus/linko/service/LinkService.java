@@ -1,16 +1,21 @@
 package com.dvlprmatheus.linko.service;
 
+import com.dvlprmatheus.linko.api.dto.projection.LinkCodeProjection;
 import com.dvlprmatheus.linko.api.dto.request.LinkRequest;
 import com.dvlprmatheus.linko.api.dto.response.LinkDestinationResponse;
 import com.dvlprmatheus.linko.api.dto.response.LinkShortenedResponse;
 import com.dvlprmatheus.linko.api.exception.EntityNotFoundException;
-import com.dvlprmatheus.linko.config.ShortProperties;
+import com.dvlprmatheus.linko.config.properties.ShortProperties;
 import com.dvlprmatheus.linko.entity.Link;
 import com.dvlprmatheus.linko.repository.LinkRepository;
 import com.dvlprmatheus.linko.utils.CodeUtils;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -21,12 +26,18 @@ public class LinkService {
   private final LinkRepository linkRepository;
   private final ShortProperties shortProperties;
 
+  @Cacheable(value = "activeLinks", key = "#code")
   public LinkDestinationResponse getActiveLinkByCode(String code) {
     log.info("Attempting to retrieve active link with code: {}", code);
     return this.linkRepository
         .findByCodeAndActiveTrue(code)
         .map(LinkDestinationResponse::new)
         .orElseThrow(EntityNotFoundException::new);
+  }
+
+  public List<LinkCodeProjection> findExpiredActiveCodes(Instant expirationDate) {
+    log.info("Finding expired active link codes before: {}", expirationDate);
+    return this.linkRepository.findExpiredActiveCodes(expirationDate);
   }
 
   @Transactional
@@ -53,6 +64,7 @@ public class LinkService {
     return code;
   }
 
+  @CacheEvict(value = "activeLinks", key = "#code")
   @Transactional
   public void deactivateLink(String code) {
     log.info("Deactivating link with code: {}", code);

@@ -1,4 +1,4 @@
-package com.dvlprmatheus.linko.config;
+package com.dvlprmatheus.linko.config.properties;
 
 import java.time.Period;
 import lombok.Getter;
