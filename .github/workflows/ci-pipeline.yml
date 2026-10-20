@@ -22,7 +22,6 @@ jobs:
       with:
         distribution: microsoft
         java-version: '25'
-    - run: java --version
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v6
