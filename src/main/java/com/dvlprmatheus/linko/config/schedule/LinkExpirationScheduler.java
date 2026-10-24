@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class LinkExpirationScheduler {
 
+  private static final ZoneId SCHEDULE_ZONE = ZoneId.of("America/Sao_Paulo");
+
   private final LinkService linkService;
   private final ShortProperties shortProperties;
 
@@ -26,9 +28,9 @@ public class LinkExpirationScheduler {
   public void deactivateExpiredLinks() {
     log.info("Starting scheduled task to deactivate expired links");
     Instant expirationDate =
-        LocalDate.now()
+        LocalDate.now(SCHEDULE_ZONE)
             .minus(shortProperties.getExpiration())
-            .atStartOfDay(ZoneId.of("America/Sao_Paulo"))
+            .atStartOfDay(SCHEDULE_ZONE)
             .toInstant();
     List<String> expiredCodes =
         linkService.findExpiredActiveCodes(expirationDate).stream()
